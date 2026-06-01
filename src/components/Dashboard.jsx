@@ -1,9 +1,11 @@
-import React from 'react';
-import { Car, CheckCircle, CalendarCheck, Users, DollarSign, Gauge, ShieldCheck, Wrench, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Car, CheckCircle, CalendarCheck, Users, DollarSign, Gauge, ShieldCheck, Wrench, ArrowRight, FileText, Printer, X } from 'lucide-react';
 import { formatAED } from '../utils/constants';
+import { invoiceHTML, printInvoice } from '../utils/invoice';
 
 export default function Dashboard({ dbData, setActiveTab }) {
   const { vehicles, customers, bookings } = dbData;
+  const [invoiceBooking, setInvoiceBooking] = useState(null);
 
   const totalVehicles = vehicles.length;
   const availableVehicles = vehicles.filter(v => v.status === 'Available').length;
@@ -29,7 +31,8 @@ export default function Dashboard({ dbData, setActiveTab }) {
   // Fleet utilization = rented / total
   const utilization = totalVehicles ? Math.round((rentedVehicles / totalVehicles) * 100) : 0;
 
-  const customerName = (id) => customers.find(c => c.id === id)?.fullName || 'Unknown';
+  const customerById = (id) => customers.find(c => c.id === id);
+  const customerName = (id) => customerById(id)?.fullName || 'Unknown';
   const vehicle = (id) => vehicles.find(v => v.id === id);
 
   const recentBookings = [...bookings].sort((a, b) => new Date(b.pickupDate) - new Date(a.pickupDate)).slice(0, 5);
@@ -89,6 +92,7 @@ export default function Dashboard({ dbData, setActiveTab }) {
                   <th>Chauffeur</th>
                   <th>Amount</th>
                   <th>Status</th>
+                  <th>Receipt</th>
                 </tr>
               </thead>
               <tbody>
@@ -103,6 +107,11 @@ export default function Dashboard({ dbData, setActiveTab }) {
                       <td>{b.withChauffeur ? 'Yes' : 'Self-drive'}</td>
                       <td>{formatAED(b.rentalAmount)}</td>
                       <td><span className={`badge badge-${b.status.toLowerCase()}`}>{b.status}</span></td>
+                      <td>
+                        <button className="btn btn-secondary btn-sm" onClick={() => setInvoiceBooking(b)} title="View receipt / invoice">
+                          <FileText size={14} />
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
@@ -111,6 +120,33 @@ export default function Dashboard({ dbData, setActiveTab }) {
           )}
         </div>
       </div>
+
+      {/* Invoice / receipt preview */}
+      {invoiceBooking && (
+        <div className="modal-overlay" onClick={() => setInvoiceBooking(null)}>
+          <div className="modal-container" style={{ maxWidth: '820px', width: '92vw' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">Receipt / Invoice</h3>
+              <button className="modal-close" onClick={() => setInvoiceBooking(null)}><X size={18} /></button>
+            </div>
+            <div className="modal-body" style={{ background: '#525659', padding: '1.25rem', maxHeight: '70vh', overflowY: 'auto' }}>
+              <div
+                style={{ background: '#fff', borderRadius: '6px', boxShadow: '0 6px 24px rgba(0,0,0,0.4)' }}
+                dangerouslySetInnerHTML={{
+                  __html: invoiceHTML(invoiceBooking, vehicle(invoiceBooking.vehicleId), customerById(invoiceBooking.customerId)),
+                }}
+              />
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={() => setInvoiceBooking(null)}>Close</button>
+              <button type="button" className="btn btn-primary"
+                onClick={() => printInvoice(invoiceBooking, vehicle(invoiceBooking.vehicleId), customerById(invoiceBooking.customerId))}>
+                <Printer size={16} /> Print / Save PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

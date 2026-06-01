@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { CalendarCheck, Plus, Trash2, X, AlertTriangle, CheckCircle2, Search, User, Download } from 'lucide-react';
+import { CalendarCheck, Plus, Trash2, X, AlertTriangle, CheckCircle2, Search, User, Download, FileText, Printer } from 'lucide-react';
 import { db, CHAUFFEUR_DAILY_RATE } from '../db/mockDb';
 import { formatAED, DUBAI_LOCATIONS } from '../utils/constants';
 import { toCSV, downloadCSV, datedFilename } from '../utils/csv';
+import { invoiceHTML, printInvoice } from '../utils/invoice';
 
 const BOOKING_CSV_COLUMNS = [
   { key: 'customer', label: 'Customer' },
@@ -40,6 +41,7 @@ export default function Bookings({ dbData, refreshDb }) {
   const [statusFilter, setStatusFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [rentEditedManually, setRentEditedManually] = useState(false);
+  const [invoiceBooking, setInvoiceBooking] = useState(null); // booking shown in invoice modal
 
   const vehicleById = (id) => vehicles.find(v => v.id === id);
   const customerById = (id) => customers.find(c => c.id === id);
@@ -209,9 +211,14 @@ export default function Bookings({ dbData, refreshDb }) {
                         </select>
                       </td>
                       <td>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(b)} title="Delete">
-                          <Trash2 size={14} />
-                        </button>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          <button className="btn btn-secondary btn-sm" onClick={() => setInvoiceBooking(b)} title="View receipt / invoice">
+                            <FileText size={14} />
+                          </button>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleDelete(b)} title="Delete">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -341,6 +348,44 @@ export default function Bookings({ dbData, refreshDb }) {
                 <button type="submit" className="btn btn-primary" disabled={blockActive}>Create Booking</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Invoice / receipt preview */}
+      {invoiceBooking && (
+        <div className="modal-overlay" onClick={() => setInvoiceBooking(null)}>
+          <div className="modal-container" style={{ maxWidth: '820px', width: '92vw' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">Receipt / Invoice</h3>
+              <button className="modal-close" onClick={() => setInvoiceBooking(null)}><X size={18} /></button>
+            </div>
+            <div className="modal-body" style={{ background: '#525659', padding: '1.25rem', maxHeight: '70vh', overflowY: 'auto' }}>
+              <div
+                style={{ background: '#fff', borderRadius: '6px', boxShadow: '0 6px 24px rgba(0,0,0,0.4)' }}
+                dangerouslySetInnerHTML={{
+                  __html: invoiceHTML(
+                    invoiceBooking,
+                    vehicleById(invoiceBooking.vehicleId),
+                    customerById(invoiceBooking.customerId)
+                  ),
+                }}
+              />
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={() => setInvoiceBooking(null)}>Close</button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => printInvoice(
+                  invoiceBooking,
+                  vehicleById(invoiceBooking.vehicleId),
+                  customerById(invoiceBooking.customerId)
+                )}
+              >
+                <Printer size={16} /> Print / Save PDF
+              </button>
+            </div>
           </div>
         </div>
       )}
