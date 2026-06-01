@@ -126,7 +126,8 @@ export default function Vehicles({ dbData, refreshDb }) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
               }}>
                 {v.image ? (
-                  <img src={v.image} alt={v.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  <img src={v.image} alt={v.name} loading="lazy" decoding="async"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                 ) : (
                   <Car size={56} style={{ color: 'rgba(255,255,255,0.25)' }} />

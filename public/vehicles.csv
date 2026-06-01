@@ -1,9 +1,9 @@
 name,brand,model,category,year,color,registration,dailyRent,deposit,status,image
-Lamborghini Huracán EVO,Lamborghini,Huracán EVO Spyder,Supercar,2023,Verde Mantis,Dubai O 55512,4500,5000,Available,/2.png
-Ferrari 488 Spider,Ferrari,488 Spider,Convertible,2022,Rosso Corsa,Dubai K 11220,5000,6000,Available,/3.png
-Rolls-Royce Cullinan,Rolls-Royce,Cullinan,Luxury SUV,2023,Arctic White,Dubai A 9001,6500,10000,Rented,/4.png
-Mercedes-Benz G63 AMG,Mercedes-Benz,G63 AMG,Luxury SUV,2023,Obsidian Black,Dubai L 33440,3000,5000,Available,/5.png
-Bentley Continental GT,Bentley,Continental GT,Luxury Sedan,2023,British Racing Green,Dubai M 7788,3500,5000,Available,/6.png
-Porsche 911 Carrera S,Porsche,911 Carrera S,Sports,2023,GT Silver,Dubai P 2024,2500,4000,Available,/7.png
-McLaren 720S,McLaren,720S,Supercar,2022,Papaya Orange,Dubai S 7200,5500,7000,Maintenance,/8.png
-Range Rover Vogue,Land Rover,Range Rover Vogue,Luxury SUV,2022,Santorini Black,Dubai B 4510,1500,3000,Available,/9.png
+Lamborghini Huracán EVO,Lamborghini,Huracán EVO Spyder,Supercar,2023,Verde Mantis,Dubai O 55512,4500,5000,Available,/2.jpg
+Ferrari 488 Spider,Ferrari,488 Spider,Convertible,2022,Rosso Corsa,Dubai K 11220,5000,6000,Available,/3.jpg
+Rolls-Royce Cullinan,Rolls-Royce,Cullinan,Luxury SUV,2023,Arctic White,Dubai A 9001,6500,10000,Rented,/4.jpg
+Mercedes-Benz G63 AMG,Mercedes-Benz,G63 AMG,Luxury SUV,2023,Obsidian Black,Dubai L 33440,3000,5000,Available,/5.jpg
+Bentley Continental GT,Bentley,Continental GT,Luxury Sedan,2023,British Racing Green,Dubai M 7788,3500,5000,Available,/6.jpg
+Porsche 911 Carrera S,Porsche,911 Carrera S,Sports,2023,GT Silver,Dubai P 2024,2500,4000,Available,/7.jpg
+McLaren 720S,McLaren,720S,Supercar,2022,Papaya Orange,Dubai S 7200,5500,7000,Maintenance,/8.jpg
+Range Rover Vogue,Land Rover,Range Rover Vogue,Luxury SUV,2022,Santorini Black,Dubai B 4510,1500,3000,Available,/9.jpg
