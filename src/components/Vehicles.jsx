@@ -155,7 +155,7 @@ export default function Vehicles({ dbData, refreshDb }) {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '0.25rem' }}>
                   <div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary)' }}>{formatAED(v.dailyRent)}</div>
+                    <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--gold)' }}>{formatAED(v.dailyRent)}</div>
                     <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>per day</div>
                   </div>
                   <div style={{ textAlign: 'right', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>

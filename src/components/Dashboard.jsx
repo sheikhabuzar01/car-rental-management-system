@@ -39,7 +39,7 @@ export default function Dashboard({ dbData, setActiveTab }) {
     { label: 'Available Vehicles', value: availableVehicles, icon: CheckCircle, color: 'var(--success)', bg: 'var(--success-light)', tab: 'vehicles' },
     { label: 'Active Rentals', value: activeRentals, icon: CalendarCheck, color: 'var(--warning)', bg: 'var(--warning-light)', tab: 'bookings' },
     { label: 'Total Customers', value: totalCustomers, icon: Users, color: 'var(--danger)', bg: 'var(--danger-light)', tab: 'customers' },
-    { label: 'Monthly Revenue', value: formatAED(monthlyRevenue), icon: DollarSign, color: 'var(--success)', bg: 'var(--success-light)', tab: 'bookings' },
+    { label: 'Monthly Revenue', value: formatAED(monthlyRevenue), icon: DollarSign, color: 'var(--gold)', bg: 'var(--gold-soft)', tab: 'bookings' },
     { label: 'Fleet Utilization', value: `${utilization}%`, icon: Gauge, color: 'var(--primary)', bg: 'var(--primary-light)', tab: 'vehicles' },
     { label: 'Deposits Held', value: formatAED(depositsHeld), icon: ShieldCheck, color: 'var(--warning)', bg: 'var(--warning-light)', tab: 'bookings' },
     { label: 'In Maintenance', value: inMaintenance, icon: Wrench, color: 'var(--danger)', bg: 'var(--danger-light)', tab: 'vehicles' },
