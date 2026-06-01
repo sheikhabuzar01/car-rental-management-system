@@ -1,303 +1,115 @@
 import React from 'react';
-import { 
-  Building2, 
-  Scale, 
-  Calendar, 
-  CheckSquare, 
-  AlertCircle, 
-  Clock, 
-  ArrowRight 
-} from 'lucide-react';
-import { translations } from '../db/translations';
+import { Car, CheckCircle, CalendarCheck, Users, DollarSign, Gauge, ShieldCheck, Wrench, ArrowRight } from 'lucide-react';
+import { formatAED } from '../utils/constants';
 
-export default function Dashboard({ lang, dbData, setActiveTab, setSelectedCaseId }) {
-  const { organizations, cases, hearings, tasks } = dbData;
-  const t = translations[lang];
+export default function Dashboard({ dbData, setActiveTab }) {
+  const { vehicles, customers, bookings } = dbData;
 
-  const activeCasesCount = cases.filter(c => c.status === 'Active').length;
-  const pendingTasksCount = tasks.filter(t => t.status === 'Pending').length;
-  
-  // Sort hearings chronologically
-  const upcomingHearings = hearings
-    .filter(h => new Date(h.hearingDate) >= new Date().setHours(0,0,0,0))
-    .sort((a, b) => new Date(a.hearingDate) - new Date(b.hearingDate));
+  const totalVehicles = vehicles.length;
+  const availableVehicles = vehicles.filter(v => v.status === 'Available').length;
+  const rentedVehicles = vehicles.filter(v => v.status === 'Rented').length;
+  const inMaintenance = vehicles.filter(v => v.status === 'Maintenance').length;
+  const activeRentals = bookings.filter(b => b.status === 'Active').length;
+  const totalCustomers = customers.length;
 
-  // Find related case helper
-  const getCaseTitle = (caseId) => {
-    const c = cases.find(c => c.id === caseId);
-    return c ? c.title : 'Unknown Case';
-  };
+  const now = new Date();
+  const monthlyRevenue = bookings
+    .filter(b => b.status !== 'Cancelled')
+    .filter(b => {
+      const d = new Date(b.pickupDate);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    })
+    .reduce((sum, b) => sum + (Number(b.rentalAmount) || 0), 0);
 
-  const getClientName = (caseId) => {
-    const c = cases.find(c => c.id === caseId);
-    if (!c) return 'Unknown Client';
-    const org = organizations.find(o => o.id === c.orgId);
-    return org ? org.name : 'Unknown Client';
-  };
+  // Security deposits currently held against active rentals
+  const depositsHeld = bookings
+    .filter(b => b.status === 'Active')
+    .reduce((sum, b) => sum + (Number(b.deposit) || 0), 0);
 
-  // High priority cases
-  const highPriorityCases = cases.filter(c => c.priority === 'High' && c.status === 'Active');
+  // Fleet utilization = rented / total
+  const utilization = totalVehicles ? Math.round((rentedVehicles / totalVehicles) * 100) : 0;
 
-  const handleCaseClick = (caseId) => {
-    setSelectedCaseId(caseId);
-    setActiveTab('cases');
-  };
+  const customerName = (id) => customers.find(c => c.id === id)?.fullName || 'Unknown';
+  const vehicle = (id) => vehicles.find(v => v.id === id);
 
-  // Translate priorities
-  const getPriorityLabel = (priority) => {
-    if (lang === 'ur') {
-      if (priority === 'High') return 'زیادہ';
-      if (priority === 'Medium') return 'درمیانی';
-      return 'کم';
-    }
-    return priority;
-  };
+  const recentBookings = [...bookings].sort((a, b) => new Date(b.pickupDate) - new Date(a.pickupDate)).slice(0, 5);
+
+  const stats = [
+    { label: 'Total Vehicles', value: totalVehicles, icon: Car, color: 'var(--primary)', bg: 'var(--primary-light)', tab: 'vehicles' },
+    { label: 'Available Vehicles', value: availableVehicles, icon: CheckCircle, color: 'var(--success)', bg: 'var(--success-light)', tab: 'vehicles' },
+    { label: 'Active Rentals', value: activeRentals, icon: CalendarCheck, color: 'var(--warning)', bg: 'var(--warning-light)', tab: 'bookings' },
+    { label: 'Total Customers', value: totalCustomers, icon: Users, color: 'var(--danger)', bg: 'var(--danger-light)', tab: 'customers' },
+    { label: 'Monthly Revenue', value: formatAED(monthlyRevenue), icon: DollarSign, color: 'var(--success)', bg: 'var(--success-light)', tab: 'bookings' },
+    { label: 'Fleet Utilization', value: `${utilization}%`, icon: Gauge, color: 'var(--primary)', bg: 'var(--primary-light)', tab: 'vehicles' },
+    { label: 'Deposits Held', value: formatAED(depositsHeld), icon: ShieldCheck, color: 'var(--warning)', bg: 'var(--warning-light)', tab: 'bookings' },
+    { label: 'In Maintenance', value: inMaintenance, icon: Wrench, color: 'var(--danger)', bg: 'var(--danger-light)', tab: 'vehicles' },
+  ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      
-      {/* Stats Summary Grid */}
       <div className="stats-grid">
-        <div className="stat-card" onClick={() => setActiveTab('clients')} style={{ cursor: 'pointer' }}>
-          <div className="stat-icon" style={{ backgroundColor: 'var(--primary-light)', color: 'var(--primary)' }}>
-            <Building2 size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-label">{t.kpiTotalClients}</span>
-            <span className="stat-value">{organizations.length}</span>
-          </div>
-        </div>
-
-        <div className="stat-card" onClick={() => setActiveTab('cases')} style={{ cursor: 'pointer' }}>
-          <div className="stat-icon" style={{ backgroundColor: 'var(--success-light)', color: 'var(--success)' }}>
-            <Scale size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-label">{t.kpiActiveCases}</span>
-            <span className="stat-value">{activeCasesCount}</span>
-          </div>
-        </div>
-
-        <div className="stat-card" onClick={() => setActiveTab('hearings')} style={{ cursor: 'pointer' }}>
-          <div className="stat-icon" style={{ backgroundColor: 'var(--warning-light)', color: 'var(--warning)' }}>
-            <Calendar size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-label">{t.kpiPendingHearings}</span>
-            <span className="stat-value">{upcomingHearings.length}</span>
-          </div>
-        </div>
-
-        <div className="stat-card" onClick={() => setActiveTab('tasks')} style={{ cursor: 'pointer' }}>
-          <div className="stat-icon" style={{ backgroundColor: 'var(--danger-light)', color: 'var(--danger)' }}>
-            <CheckSquare size={24} />
-          </div>
-          <div className="stat-info">
-            <span className="stat-label">{t.kpiPendingTasks}</span>
-            <span className="stat-value">{pendingTasksCount}</span>
-          </div>
-        </div>
+        {stats.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} className="stat-card" onClick={() => setActiveTab(s.tab)} style={{ cursor: 'pointer' }}>
+              <div className="stat-icon" style={{ backgroundColor: s.bg, color: s.color }}>
+                <Icon size={24} />
+              </div>
+              <div className="stat-info">
+                <span className="stat-label">{s.label}</span>
+                <span className="stat-value">{s.value}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Main Dashboard Grid */}
-      <div className="dashboard-grid">
-        
-        {/* Left Column: High Priority Cases & Active Cases List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="dashboard-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">
-                <AlertCircle size={18} style={{ color: 'var(--danger)' }} />
-                {t.highPriorityMatters}
-              </h3>
-              <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('cases')}>
-                {lang === 'ur' ? 'سب دیکھیں' : 'View All'} <ArrowRight size={14} style={{ transform: lang === 'ur' ? 'rotate(180deg)' : 'none' }} />
-              </button>
-            </div>
-            
-            <div className="custom-table-wrapper">
-              {highPriorityCases.length === 0 ? (
-                <p style={{ color: 'var(--text-secondary)', padding: '1rem 0' }}>{t.noHighCases}</p>
-              ) : (
-                <table className="custom-table">
-                  <thead>
-                    <tr>
-                      <th>{t.caseTitleCol}</th>
-                      <th>{t.clientCol}</th>
-                      <th>{t.stageCol}</th>
-                      <th>{t.actionsCol}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {highPriorityCases.map((c) => {
-                      const org = organizations.find(o => o.id === c.orgId);
-                      return (
-                        <tr key={c.id}>
-                          <td>
-                            <div className="case-cell-title" style={{ fontWeight: '600' }}>{c.title}</div>
-                            <div className="case-cell-number">{c.caseNumber}</div>
-                          </td>
-                          <td>{org ? org.name : 'Unknown'}</td>
-                          <td>
-                            <span className="badge badge-medium">{lang === 'ur' && c.stage === 'Pleading' ? 'درخواست گزار' : lang === 'ur' && c.stage === 'Discovery' ? 'انکشاف' : lang === 'ur' && c.stage === 'Trial' ? 'سماعت' : c.stage}</span>
-                          </td>
-                          <td>
-                            <button className="btn btn-secondary btn-sm" onClick={() => handleCaseClick(c.id)}>
-                              {lang === 'ur' ? 'انتظام کریں' : 'Manage'}
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </div>
-
-          <div className="dashboard-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">
-                <Scale size={18} />
-                {lang === 'ur' ? 'حالیہ قانونی چارہ جوئی کی فہرست' : 'Recent Litigation Index'}
-              </h3>
-            </div>
-            <div className="custom-table-wrapper">
-              <table className="custom-table">
-                <thead>
-                  <tr>
-                    <th>{t.caseTitleCol}</th>
-                    <th>{t.courtCol}</th>
-                    <th>{t.priorityCol}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cases.slice(0, 4).map((c) => (
-                    <tr key={c.id} onClick={() => handleCaseClick(c.id)} style={{ cursor: 'pointer' }}>
-                      <td>
-                        <div className="case-cell-title" style={{ fontWeight: '500' }}>{c.title}</div>
-                        <div className="case-cell-number">{c.caseNumber}</div>
-                      </td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{c.court}</td>
-                      <td>
-                        <span className={`badge badge-${c.priority.toLowerCase()}`}>{getPriorityLabel(c.priority)}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div className="dashboard-panel">
+        <div className="panel-header">
+          <h3 className="panel-title">
+            <CalendarCheck size={18} />
+            Recent Bookings
+          </h3>
+          <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('bookings')}>
+            View All <ArrowRight size={14} />
+          </button>
         </div>
 
-        {/* Right Column: Calendar Agenda & Deadlines */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="dashboard-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">
-                <Clock size={18} style={{ color: 'var(--warning)' }} />
-                {t.upcomingAgenda}
-              </h3>
-              <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('hearings')}>
-                {lang === 'ur' ? 'مکمل کیلنڈر' : 'Full Calendar'}
-              </button>
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem' }}>
-              {upcomingHearings.length === 0 ? (
-                <p style={{ color: 'var(--text-secondary)', padding: '1rem 0' }}>{t.noAgenda}</p>
-              ) : (
-                upcomingHearings.slice(0, 4).map((h) => {
-                  const daysLeft = Math.ceil((new Date(h.hearingDate) - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24));
+        <div className="custom-table-wrapper">
+          {recentBookings.length === 0 ? (
+            <p style={{ color: 'var(--text-secondary)', padding: '1rem 0' }}>No bookings yet.</p>
+          ) : (
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Vehicle</th>
+                  <th>Pickup</th>
+                  <th>Return</th>
+                  <th>Chauffeur</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentBookings.map((b) => {
+                  const v = vehicle(b.vehicleId);
                   return (
-                    <div 
-                      key={h.id} 
-                      onClick={() => handleCaseClick(h.caseId)}
-                      style={{ 
-                        display: 'flex', 
-                        gap: '0.75rem', 
-                        padding: '0.75rem', 
-                        border: '1px solid var(--border-color)', 
-                        borderRadius: 'var(--radius-md)',
-                        cursor: 'pointer',
-                        textAlign: lang === 'ur' ? 'right' : 'left'
-                      }}
-                    >
-                      <div style={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        alignItems: 'center', 
-                        justifyContent: 'center', 
-                        backgroundColor: daysLeft === 1 ? 'var(--danger-light)' : 'var(--bg-primary)', 
-                        color: daysLeft === 1 ? 'var(--danger)' : 'var(--text-primary)',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: '6px',
-                        minWidth: '60px',
-                        border: '1px solid var(--border-color)'
-                      }}>
-                        <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', fontWeight: 'bold' }}>
-                          {new Date(h.hearingDate).toLocaleDateString(lang === 'ur' ? 'ur-PK' : 'en-US', { month: 'short' })}
-                        </span>
-                        <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
-                          {new Date(h.hearingDate).getDate()}
-                        </span>
-                      </div>
-                      <div style={{ overflow: 'hidden', flexGrow: 1 }}>
-                        <div style={{ fontWeight: '600', fontSize: '0.85rem', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                          {h.purpose}
-                        </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                          {getCaseTitle(h.caseId)}
-                        </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
-                          <span>{h.time}</span>
-                          <span>•</span>
-                          <span>{h.courtroom}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <tr key={b.id}>
+                      <td style={{ fontWeight: 600 }}>{customerName(b.customerId)}</td>
+                      <td>{v ? v.name : 'Unknown'}</td>
+                      <td>{b.pickupDate}</td>
+                      <td>{b.returnDate}</td>
+                      <td>{b.withChauffeur ? 'Yes' : 'Self-drive'}</td>
+                      <td>{formatAED(b.rentalAmount)}</td>
+                      <td><span className={`badge badge-${b.status.toLowerCase()}`}>{b.status}</span></td>
+                    </tr>
                   );
-                })
-              )}
-            </div>
-          </div>
-
-          <div className="dashboard-panel">
-            <div className="panel-header">
-              <h3 className="panel-title">
-                <CheckSquare size={18} />
-                {lang === 'ur' ? 'کاموں کے لیے آخری تاریخیں' : 'Action Items Deadlines'}
-              </h3>
-              <button className="btn btn-secondary btn-sm" onClick={() => setActiveTab('tasks')}>
-                {lang === 'ur' ? 'تمام ٹاسک' : 'All Tasks'}
-              </button>
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {tasks.filter(t => t.status === 'Pending').slice(0, 4).map((t) => (
-                <div 
-                  key={t.id} 
-                  style={{ 
-                    padding: '0.75rem', 
-                    borderRadius: 'var(--radius-md)', 
-                    border: '1px solid var(--border-color)',
-                    backgroundColor: 'var(--bg-primary)'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <span style={{ fontWeight: '500', fontSize: '0.85rem' }}>{t.title}</span>
-                    <span className={`badge badge-${t.priority.toLowerCase()}`}>{getPriorityLabel(t.priority)}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-                    <span>{lang === 'ur' ? 'آخری تاریخ' : 'Due'}: {t.dueDate}</span>
-                    <span style={{ fontStyle: 'italic' }}>{getClientName(t.caseId)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
-
       </div>
     </div>
   );

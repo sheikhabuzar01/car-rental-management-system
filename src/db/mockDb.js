@@ -1,292 +1,60 @@
-// mockDb.js - Database Service using localStorage
+// mockDb.js - Dubai Luxury Car Rental data layer (localStorage backed)
 
-const STORAGE_KEY = 'attorney_case_manager_db';
+const STORAGE_KEY = 'dubai_luxury_rental_db_v1';
 
 const initialData = {
-  organizations: [
-    {
-      id: 'org-1',
-      name: 'Systems Limited Pakistan',
-      industry: 'IT Consulting & Export',
-      taxId: 'NTN-4309821-3',
-      primaryContact: 'Asif Peer',
-      email: 'info@systemsltd.com',
-      phone: '+92 (42) 111-797-853',
-      status: 'Active',
-    },
-    {
-      id: 'org-2',
-      name: 'Nishat Mills Group',
-      industry: 'Textiles & Energy',
-      taxId: 'NTN-0812903-5',
-      primaryContact: 'Mian Mansha',
-      email: 'corporate@nishat.com',
-      phone: '+92 (42) 35712401',
-      status: 'Active',
-    },
-    {
-      id: 'org-3',
-      name: 'Packages Limited Lahore',
-      industry: 'Packaging & Paperboard',
-      taxId: 'NTN-2289410-1',
-      primaryContact: 'Khurram Raza',
-      email: 'legal@packages.com.pk',
-      phone: '+92 (42) 35811541',
-      status: 'Active',
-    }
+  vehicles: [
+    { id: 'veh-1', name: 'Lamborghini Huracán EVO', brand: 'Lamborghini', model: 'Huracán EVO Spyder', category: 'Supercar', year: 2023, color: 'Verde Mantis', registration: 'Dubai O 55512', dailyRent: 4500, deposit: 5000, status: 'Available', image: '' },
+    { id: 'veh-2', name: 'Ferrari 488 Spider', brand: 'Ferrari', model: '488 Spider', category: 'Convertible', year: 2022, color: 'Rosso Corsa', registration: 'Dubai K 11220', dailyRent: 5000, deposit: 6000, status: 'Available', image: '' },
+    { id: 'veh-3', name: 'Rolls-Royce Cullinan', brand: 'Rolls-Royce', model: 'Cullinan', category: 'Luxury SUV', year: 2023, color: 'Arctic White', registration: 'Dubai A 9001', dailyRent: 6500, deposit: 10000, status: 'Rented', image: '' },
+    { id: 'veh-4', name: 'Mercedes-Benz G63 AMG', brand: 'Mercedes-Benz', model: 'G63 AMG', category: 'Luxury SUV', year: 2023, color: 'Obsidian Black', registration: 'Dubai L 33440', dailyRent: 3000, deposit: 5000, status: 'Available', image: '' },
+    { id: 'veh-5', name: 'Bentley Continental GT', brand: 'Bentley', model: 'Continental GT', category: 'Luxury Sedan', year: 2023, color: 'British Racing Green', registration: 'Dubai M 7788', dailyRent: 3500, deposit: 5000, status: 'Available', image: '' },
+    { id: 'veh-6', name: 'Porsche 911 Carrera S', brand: 'Porsche', model: '911 Carrera S', category: 'Sports', year: 2023, color: 'GT Silver', registration: 'Dubai P 2024', dailyRent: 2500, deposit: 4000, status: 'Available', image: '' },
+    { id: 'veh-7', name: 'McLaren 720S', brand: 'McLaren', model: '720S', category: 'Supercar', year: 2022, color: 'Papaya Orange', registration: 'Dubai S 7200', dailyRent: 5500, deposit: 7000, status: 'Maintenance', image: '' },
+    { id: 'veh-8', name: 'Range Rover Vogue', brand: 'Land Rover', model: 'Range Rover Vogue', category: 'Luxury SUV', year: 2022, color: 'Santorini Black', registration: 'Dubai B 4510', dailyRent: 1500, deposit: 3000, status: 'Available', image: '' },
   ],
-  branches: [
-    {
-      id: 'branch-1-1',
-      orgId: 'org-1',
-      name: 'Lahore Headquarters (Gulberg)',
-      city: 'Lahore',
-      address: 'Commercial Area, Sector-E, Phase V, DHA, Lahore',
-      contactPerson: 'Asif Peer',
-      email: 'hq-lhr@systemsltd.com'
-    },
-    {
-      id: 'branch-1-2',
-      orgId: 'org-1',
-      name: 'Software Technology Park Branch',
-      city: 'Lahore',
-      address: 'A-Block, Ferozepur Road, Lahore',
-      contactPerson: 'Zeeshan Alvi',
-      email: 'stp-lhr@systemsltd.com'
-    },
-    {
-      id: 'branch-2-1',
-      orgId: 'org-2',
-      name: 'Nishat House Headquarters',
-      city: 'Lahore',
-      address: 'Emperor Road, near Session Court, Lahore',
-      contactPerson: 'Mian Mansha',
-      email: 'hq-lhr@nishat.com'
-    },
-    {
-      id: 'branch-3-1',
-      orgId: 'org-3',
-      name: 'Ferozepur Road Industrial Estate',
-      city: 'Lahore',
-      address: 'Packages Factory Gate 4, Ferozepur Road, Lahore',
-      contactPerson: 'Khurram Raza',
-      email: 'lhr-factory@packages.com.pk'
-    }
+  customers: [
+    { id: 'cus-1', fullName: 'Khalid Al Maktoum', phone: '+971 50 123 4567', email: 'khalid@example.ae', emiratesId: '784-1988-1234567-1', license: 'DXB-DL-99821', nationality: 'United Arab Emirates' },
+    { id: 'cus-2', fullName: 'Sophia Williams', phone: '+971 55 987 6543', email: 'sophia.w@example.com', emiratesId: '784-1992-7654321-8', license: 'UK-DL-44120', nationality: 'United Kingdom' },
+    { id: 'cus-3', fullName: 'Rajesh Mehta', phone: '+971 52 555 6677', email: 'rajesh.m@example.com', emiratesId: '784-1990-9988776-5', license: 'IN-DL-11003', nationality: 'India' },
   ],
-  cases: [
+  bookings: [
     {
-      id: 'case-1',
-      orgId: 'org-1',
-      branchId: 'branch-1-2',
-      caseNumber: 'LHC-WP-2026-8921',
-      title: 'Systems Limited v. Punjab IT Board (Service Tender Dispute)',
-      description: 'Writ Petition in Lahore High Court contesting the unlawful disqualification and cancellation of systems development procurement tender.',
-      court: 'Lahore High Court (LHC), Lahore',
-      judge: 'Mr. Justice Shahid Karim',
-      type: 'Writ Petition',
-      stage: 'Discovery',
+      id: 'bk-1',
+      vehicleId: 'veh-3',
+      customerId: 'cus-1',
+      pickupDate: '2026-05-28',
+      returnDate: '2026-06-03',
+      pickupLocation: 'Palm Jumeirah',
+      withChauffeur: true,
+      deposit: 10000,
+      rentalAmount: 45500,
       status: 'Active',
-      priority: 'High',
-      filingDate: '2026-01-15'
     },
     {
-      id: 'case-2',
-      orgId: 'org-1',
-      branchId: 'branch-1-1',
-      caseNumber: 'LHC-CS-2026-302',
-      title: 'Nishat Mills Group v. Lesco Power Distribution (Billing Audit Appeal)',
-      description: 'Civil suit filed in Lahore Session Court seeking declaration and temporary injunction against retrospective adjustments of industrial electricity tariffs.',
-      court: 'Civil Court Lahore',
-      judge: 'Senior Civil Judge Ahmed Nawaz',
-      type: 'Civil Lawsuit',
-      stage: 'Pleading',
-      status: 'Active',
-      priority: 'Medium',
-      filingDate: '2026-03-10'
-    },
-    {
-      id: 'case-3',
-      orgId: 'org-2',
-      branchId: 'branch-2-1',
-      caseNumber: 'LHC-BC-2025-1092',
-      title: 'Habib Bank Ltd v. Nishat Mills (Credit Line Recovery)',
-      description: 'Banking Recovery Suit instituted in Lahore High Court Banking Bench regarding credit limits and guarantees during commercial expansion.',
-      court: 'Banking Court Lahore (LHC Bench)',
-      judge: 'Justice Abid Aziz Sheikh',
-      type: 'Banking Recovery',
-      stage: 'Trial',
-      status: 'Active',
-      priority: 'High',
-      filingDate: '2025-11-04'
-    },
-    {
-      id: 'case-4',
-      orgId: 'org-3',
-      branchId: 'branch-3-1',
-      caseNumber: 'LHC-L-2026-4012',
-      title: 'Labour Union v. Packages Limited Lahore (Collective Bargaining Appeal)',
-      description: 'Petition filed by trade union representatives regarding wages and overtime computation models. Representation of Packages Ltd legal department.',
-      court: 'Session Court Lahore',
-      judge: 'District & Sessions Judge Khalid Mahmood',
-      type: 'Labour Court',
-      stage: 'Discovery',
-      status: 'Active',
-      priority: 'Low',
-      filingDate: '2026-04-20'
-    }
-  ],
-  hearings: [
-    {
-      id: 'hearing-1',
-      caseId: 'case-1',
-      hearingDate: '2026-06-15',
-      time: '10:00 AM',
-      purpose: 'Admissibility Arguments & Interim Stay Order',
-      courtroom: 'Courtroom 3, Lahore High Court',
-      status: 'Scheduled',
-      outcome: 'Scheduled',
-      notes: ''
-    },
-    {
-      id: 'hearing-2',
-      caseId: 'case-2',
-      hearingDate: '2026-05-28',
-      time: '02:00 PM',
-      purpose: 'LESCO Tariffs Verification & Interim Stay Order',
-      courtroom: 'Session Court Room 14, Lahore',
-      status: 'Scheduled',
-      outcome: 'Scheduled',
-      notes: ''
-    },
-    {
-      id: 'hearing-3',
-      caseId: 'case-3',
-      hearingDate: '2026-06-02',
-      time: '09:30 AM',
-      purpose: 'Witness Cross Examination (Bank Manager)',
-      courtroom: 'High Court Annex Building Room B',
-      status: 'Scheduled',
-      outcome: 'Scheduled',
-      notes: ''
-    },
-    {
-      id: 'hearing-4',
-      caseId: 'case-4',
-      hearingDate: '2026-05-22',
-      time: '11:00 AM',
-      purpose: 'Overtime Audit Presentation',
-      courtroom: 'Sessions Court Block C, Room 4',
-      status: 'Scheduled',
-      outcome: 'Scheduled',
-      notes: ''
-    }
-  ],
-  caseNotes: [],
-  timeEntries: [],
-  invoices: [],
-  documents: [
-    {
-      id: 'doc-1',
-      caseId: 'case-1',
-      orgId: 'org-1',
-      name: 'LHC_Writ_Petition_Punjab_ITB_Writ.pdf',
-      type: 'pdf',
-      size: '2.4 MB',
-      uploadDate: '2026-01-15',
-      category: 'Pleading'
-    },
-    {
-      id: 'doc-2',
-      caseId: 'case-1',
-      orgId: 'org-1',
-      name: 'PITB_Written_Statement_Filed.pdf',
-      type: 'pdf',
-      size: '1.8 MB',
-      uploadDate: '2026-02-20',
-      category: 'Pleading'
-    },
-    {
-      id: 'doc-3',
-      caseId: 'case-2',
-      orgId: 'org-1',
-      name: 'Injunction_Request_LESCO_Billing.docx',
-      type: 'docx',
-      size: '520 KB',
-      uploadDate: '2026-04-12',
-      category: 'Motion'
-    },
-    {
-      id: 'doc-4',
-      caseId: 'case-3',
-      orgId: 'org-2',
-      name: 'Nishat_Credit_Line_Agreement_Executed.pdf',
-      type: 'pdf',
-      size: '14.2 MB',
-      uploadDate: '2025-11-10',
-      category: 'Evidence'
-    },
-    {
-      id: 'doc-5',
-      caseId: 'case-4',
-      orgId: 'org-3',
-      name: 'Collective_Bargaining_Agreement_Packages.pdf',
-      type: 'pdf',
-      size: '890 KB',
-      uploadDate: '2026-04-22',
-      category: 'Contract'
-    }
-  ],
-  tasks: [
-    {
-      id: 'task-1',
-      caseId: 'case-1',
-      title: 'Draft rejoinder to PITB written statement',
-      dueDate: '2026-06-01',
-      assignedTo: 'Lead Counsel / Patent Specialist',
-      status: 'Pending',
-      priority: 'High'
-    },
-    {
-      id: 'task-2',
-      caseId: 'case-1',
-      title: 'Compile LESCO bills and calculations for billing court',
-      dueDate: '2026-05-30',
-      assignedTo: 'Discovery Team',
-      status: 'Pending',
-      priority: 'High'
-    },
-    {
-      id: 'task-3',
-      caseId: 'case-2',
-      title: 'Submit witness power of attorney (Wakalatnama)',
-      dueDate: '2026-05-24',
-      assignedTo: 'Securities Partner',
-      status: 'Pending',
-      priority: 'Medium'
-    },
-    {
-      id: 'task-4',
-      caseId: 'case-3',
-      title: 'Finalize audit statements and audit verification',
-      dueDate: '2026-05-25',
-      assignedTo: 'Litigation Team',
+      id: 'bk-2',
+      vehicleId: 'veh-1',
+      customerId: 'cus-2',
+      pickupDate: '2026-05-10',
+      returnDate: '2026-05-13',
+      pickupLocation: 'Dubai Marina',
+      withChauffeur: false,
+      deposit: 5000,
+      rentalAmount: 18000,
       status: 'Completed',
-      priority: 'High'
     },
-    {
-      id: 'task-5',
-      caseId: 'case-4',
-      title: 'Draft stay application for packages labor dispute',
-      dueDate: '2026-05-21',
-      assignedTo: 'Associate',
-      status: 'Pending',
-      priority: 'High'
-    }
-  ]
+  ],
 };
 
-// Database class to read/write state
-class AttorneyDb {
+const BOOKING_STATUSES = ['Active', 'Completed', 'Cancelled'];
+
+// Statuses that occupy a vehicle for availability purposes.
+const BLOCKING_STATUSES = ['Active'];
+
+// Per-day surcharge when a professional chauffeur is requested (AED).
+const CHAUFFEUR_DAILY_RATE = 500;
+
+class CarRentalDb {
   constructor() {
     this.data = this._load();
   }
@@ -297,12 +65,6 @@ class AttorneyDb {
     if (raw) {
       try {
         data = JSON.parse(raw);
-        // Automatically migrate/reset from US template seed data to Pakistan seed data
-        if (data.organizations && data.organizations.some(org => org.name === 'OmniCorp Industries')) {
-          console.warn('US template seed data detected. Resetting to Lahore, Pakistan region seeds...');
-          localStorage.removeItem(STORAGE_KEY);
-          data = null;
-        }
       } catch (e) {
         data = null;
       }
@@ -311,450 +73,219 @@ class AttorneyDb {
       this._save(initialData);
       return JSON.parse(JSON.stringify(initialData));
     }
-    // Forward-compat migrations for newly added schema
-    if (!Array.isArray(data.caseNotes)) {
-      data.caseNotes = [];
-    }
-    if (!Array.isArray(data.timeEntries)) {
-      data.timeEntries = [];
-    }
-    if (!Array.isArray(data.invoices)) {
-      data.invoices = [];
-    }
-    if (Array.isArray(data.hearings)) {
-      data.hearings = data.hearings.map(h => ({
-        ...h,
-        outcome: h.outcome || 'Scheduled',
-        notes: typeof h.notes === 'string' ? h.notes : ''
-      }));
-    }
+    if (!Array.isArray(data.vehicles)) data.vehicles = [];
+    if (!Array.isArray(data.customers)) data.customers = [];
+    if (!Array.isArray(data.bookings)) data.bookings = [];
     return data;
   }
 
   _save(newData) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
     this.data = newData;
-    // Dispatch custom event to notify components of updates
     window.dispatchEvent(new CustomEvent('db-update', { detail: newData }));
   }
 
-  // Generic getter
   getData() {
     return this.data;
   }
 
-  // --- ORGANIZATIONS ---
-  addOrganization(org) {
+  // --- VEHICLES ---
+  addVehicle(v) {
     const data = this._load();
-    const newOrg = { id: `org-${Date.now()}`, ...org, status: org.status || 'Active' };
-    data.organizations.push(newOrg);
-    this._save(data);
-    return newOrg;
-  }
-
-  updateOrganization(id, updatedFields) {
-    const data = this._load();
-    data.organizations = data.organizations.map(o => o.id === id ? { ...o, ...updatedFields } : o);
-    this._save(data);
-    return data.organizations.find(o => o.id === id);
-  }
-
-  deleteOrganization(id) {
-    const data = this._load();
-    // Also clean up branches, cases, documents, tasks, hearings
-    data.organizations = data.organizations.filter(o => o.id !== id);
-    data.branches = data.branches.filter(b => b.orgId !== id);
-    
-    // Find all cases related to this org to clean hearings, docs, tasks
-    const caseIds = data.cases.filter(c => c.orgId === id).map(c => c.id);
-    data.cases = data.cases.filter(c => c.orgId !== id);
-    data.documents = data.documents.filter(d => d.orgId !== id && !caseIds.includes(d.caseId));
-    data.tasks = data.tasks.filter(t => !caseIds.includes(t.caseId));
-    data.hearings = data.hearings.filter(h => !caseIds.includes(h.caseId));
-    data.caseNotes = (data.caseNotes || []).filter(n => !caseIds.includes(n.caseId));
-    data.timeEntries = (data.timeEntries || []).filter(te => !caseIds.includes(te.caseId));
-    data.invoices = (data.invoices || []).filter(inv => inv.orgId !== id);
-
-    this._save(data);
-  }
-
-  // --- BRANCHES ---
-  addBranch(branch) {
-    const data = this._load();
-    const newBranch = { id: `branch-${Date.now()}`, ...branch };
-    data.branches.push(newBranch);
-    this._save(data);
-    return newBranch;
-  }
-
-  updateBranch(id, updatedFields) {
-    const data = this._load();
-    data.branches = data.branches.map(b => b.id === id ? { ...b, ...updatedFields } : b);
-    this._save(data);
-    return data.branches.find(b => b.id === id);
-  }
-
-  deleteBranch(id) {
-    const data = this._load();
-    data.branches = data.branches.filter(b => b.id !== id);
-
-    // Find all cases associated with this branch to clean up
-    const caseIds = data.cases.filter(c => c.branchId === id).map(c => c.id);
-    data.cases = data.cases.filter(c => c.branchId !== id);
-    data.documents = data.documents.filter(d => !caseIds.includes(d.caseId));
-    data.tasks = data.tasks.filter(t => !caseIds.includes(t.caseId));
-    data.hearings = data.hearings.filter(h => !caseIds.includes(h.caseId));
-    data.caseNotes = (data.caseNotes || []).filter(n => !caseIds.includes(n.caseId));
-    data.timeEntries = (data.timeEntries || []).filter(te => !caseIds.includes(te.caseId));
-
-    this._save(data);
-  }
-
-  // --- CASES ---
-  addCase(c) {
-    const data = this._load();
-    const newCase = { 
-      id: `case-${Date.now()}`, 
-      ...c, 
-      status: c.status || 'Active', 
-      filingDate: c.filingDate || new Date().toISOString().split('T')[0] 
+    const newVehicle = {
+      id: `veh-${Date.now()}`,
+      name: v.name,
+      brand: v.brand || '',
+      model: v.model || '',
+      category: v.category || 'Luxury Sedan',
+      year: Number(v.year) || new Date().getFullYear(),
+      color: v.color || '',
+      registration: v.registration || '',
+      dailyRent: Number(v.dailyRent) || 0,
+      deposit: Number(v.deposit) || 0,
+      status: v.status || 'Available',
+      image: v.image || '',
     };
-    data.cases.push(newCase);
+    data.vehicles.push(newVehicle);
     this._save(data);
-    return newCase;
+    return newVehicle;
   }
 
-  updateCase(id, updatedFields) {
+  updateVehicle(id, fields) {
     const data = this._load();
-    data.cases = data.cases.map(c => c.id === id ? { ...c, ...updatedFields } : c);
+    data.vehicles = data.vehicles.map(v => {
+      if (v.id !== id) return v;
+      const merged = { ...v, ...fields };
+      merged.dailyRent = fields.dailyRent !== undefined ? Number(fields.dailyRent) : v.dailyRent;
+      merged.deposit = fields.deposit !== undefined ? Number(fields.deposit) : v.deposit;
+      merged.year = fields.year !== undefined ? Number(fields.year) : v.year;
+      return merged;
+    });
     this._save(data);
-    return data.cases.find(c => c.id === id);
+    return data.vehicles.find(v => v.id === id);
   }
 
-  deleteCase(id) {
+  deleteVehicle(id) {
     const data = this._load();
-    data.cases = data.cases.filter(c => c.id !== id);
-    data.documents = data.documents.filter(d => d.caseId !== id);
-    data.tasks = data.tasks.filter(t => t.caseId !== id);
-    data.hearings = data.hearings.filter(h => h.caseId !== id);
-    data.caseNotes = (data.caseNotes || []).filter(n => n.caseId !== id);
-    data.timeEntries = (data.timeEntries || []).filter(te => te.caseId !== id);
+    data.vehicles = data.vehicles.filter(v => v.id !== id);
+    data.bookings = data.bookings.filter(b => b.vehicleId !== id);
     this._save(data);
   }
 
-  // --- HEARINGS ---
-  addHearing(h) {
+  // --- CUSTOMERS ---
+  addCustomer(c) {
     const data = this._load();
-    const newHearing = {
-      id: `hearing-${Date.now()}`,
-      ...h,
-      status: h.status || 'Scheduled',
-      outcome: h.outcome || 'Scheduled',
-      notes: typeof h.notes === 'string' ? h.notes : ''
+    const newCustomer = {
+      id: `cus-${Date.now()}`,
+      fullName: c.fullName,
+      phone: c.phone || '',
+      email: c.email || '',
+      emiratesId: c.emiratesId || '',
+      license: c.license || '',
+      nationality: c.nationality || '',
     };
-    data.hearings.push(newHearing);
+    data.customers.push(newCustomer);
     this._save(data);
-    return newHearing;
+    return newCustomer;
   }
 
-  updateHearing(id, updatedFields) {
+  updateCustomer(id, fields) {
     const data = this._load();
-    data.hearings = data.hearings.map(h => h.id === id ? { ...h, ...updatedFields } : h);
+    data.customers = data.customers.map(c => c.id === id ? { ...c, ...fields } : c);
     this._save(data);
-    return data.hearings.find(h => h.id === id);
+    return data.customers.find(c => c.id === id);
   }
 
-  deleteHearing(id) {
+  deleteCustomer(id) {
     const data = this._load();
-    data.hearings = data.hearings.filter(h => h.id !== id);
+    data.customers = data.customers.filter(c => c.id !== id);
+    data.bookings = data.bookings.filter(b => b.customerId !== id);
     this._save(data);
   }
 
-  // --- DOCUMENTS ---
-  async addDocument(doc, fileObj) {
+  // --- BOOKINGS ---
+
+  /**
+   * Core business logic: check whether a vehicle is free for a date range.
+   * Returns { available: boolean, conflicts: Booking[] }.
+   * Two ranges overlap when start_A <= end_B AND start_B <= end_A.
+   * Only bookings in a BLOCKING status (Active) occupy the vehicle.
+   * Pass `ignoreBookingId` when editing so a booking doesn't conflict with itself.
+   */
+  checkAvailability(vehicleId, pickupDate, returnDate, ignoreBookingId = null) {
     const data = this._load();
-    const newDoc = { 
-      id: `doc-${Date.now()}`, 
-      ...doc, 
-      uploadDate: new Date().toISOString().split('T')[0] 
-    };
-    data.documents.push(newDoc);
-    this._save(data);
-    if (fileObj) {
-      await saveFileContent(newDoc.id, fileObj);
+    const start = new Date(pickupDate);
+    const end = new Date(returnDate);
+
+    const conflicts = data.bookings.filter(b => {
+      if (b.vehicleId !== vehicleId) return false;
+      if (b.id === ignoreBookingId) return false;
+      if (!BLOCKING_STATUSES.includes(b.status)) return false;
+      const bStart = new Date(b.pickupDate);
+      const bEnd = new Date(b.returnDate);
+      return start <= bEnd && bStart <= end;
+    });
+
+    return { available: conflicts.length === 0, conflicts };
+  }
+
+  /**
+   * Create a booking only if the vehicle is free for the requested dates.
+   * Throws an Error with a readable message on invalid input or double-booking.
+   */
+  addBooking(b) {
+    const data = this._load();
+
+    if (!b.vehicleId) throw new Error('Please select a vehicle.');
+    if (!b.customerId) throw new Error('Please select a customer.');
+    if (!b.pickupDate || !b.returnDate) throw new Error('Pickup and return dates are required.');
+    if (new Date(b.returnDate) < new Date(b.pickupDate)) {
+      throw new Error('Return date cannot be before the pickup date.');
     }
-    return newDoc;
-  }
 
-  async deleteDocument(id) {
-    const data = this._load();
-    data.documents = data.documents.filter(d => d.id !== id);
-    this._save(data);
-    await deleteFileContent(id);
-  }
-
-  async getFileContent(id) {
-    return await getFileContent(id);
-  }
-
-  // --- TASKS ---
-  addTask(t) {
-    const data = this._load();
-    const newTask = { id: `task-${Date.now()}`, ...t, status: t.status || 'Pending' };
-    data.tasks.push(newTask);
-    this._save(data);
-    return newTask;
-  }
-
-  updateTask(id, updatedFields) {
-    const data = this._load();
-    data.tasks = data.tasks.map(t => t.id === id ? { ...t, ...updatedFields } : t);
-    this._save(data);
-    return data.tasks.find(t => t.id === id);
-  }
-
-  deleteTask(id) {
-    const data = this._load();
-    data.tasks = data.tasks.filter(t => t.id !== id);
-    this._save(data);
-  }
-
-  reorderTasks(draggedId, targetTaskId) {
-    const data = this._load();
-    const draggedIndex = data.tasks.findIndex(t => t.id === draggedId);
-    const targetIndex = data.tasks.findIndex(t => t.id === targetTaskId);
-    if (draggedIndex === -1 || targetIndex === -1) return;
-
-    const [draggedTask] = data.tasks.splice(draggedIndex, 1);
-    data.tasks.splice(targetIndex, 0, draggedTask);
-    this._save(data);
-  }
-
-  moveTaskToEnd(id) {
-    const data = this._load();
-    const index = data.tasks.findIndex(t => t.id === id);
-    if (index !== -1) {
-      const [task] = data.tasks.splice(index, 1);
-      data.tasks.push(task);
-      this._save(data);
+    const vehicle = data.vehicles.find(v => v.id === b.vehicleId);
+    if (vehicle && vehicle.status === 'Maintenance') {
+      throw new Error('This vehicle is under maintenance and cannot be booked.');
     }
-  }
 
-  // --- CASE NOTES ---
-  addNote(note) {
-    const data = this._load();
-    if (!Array.isArray(data.caseNotes)) data.caseNotes = [];
-    const newNote = {
-      id: `note-${Date.now()}`,
-      caseId: note.caseId,
-      body: note.body || '',
-      author: note.author || '',
-      createdAt: new Date().toISOString()
-    };
-    data.caseNotes.push(newNote);
-    this._save(data);
-    return newNote;
-  }
+    const status = BOOKING_STATUSES.includes(b.status) ? b.status : 'Active';
 
-  deleteNote(id) {
-    const data = this._load();
-    data.caseNotes = (data.caseNotes || []).filter(n => n.id !== id);
-    this._save(data);
-  }
-
-  getNotesForCase(caseId) {
-    const data = this._load();
-    return (data.caseNotes || [])
-      .filter(n => n.caseId === caseId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }
-
-  // --- TIME ENTRIES ---
-  addTimeEntry(entry) {
-    const data = this._load();
-    if (!Array.isArray(data.timeEntries)) data.timeEntries = [];
-    const newEntry = {
-      id: `time-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      caseId: entry.caseId,
-      attorneyName: entry.attorneyName || '',
-      date: entry.date || new Date().toISOString().split('T')[0],
-      hours: Number(entry.hours) || 0,
-      rate: Number(entry.rate) || 0,
-      currency: entry.currency || 'PKR',
-      description: entry.description || '',
-      billable: entry.billable !== false,
-      invoiceId: null
-    };
-    data.timeEntries.push(newEntry);
-    this._save(data);
-    return newEntry;
-  }
-
-  updateTimeEntry(id, patch) {
-    const data = this._load();
-    data.timeEntries = (data.timeEntries || []).map(te => te.id === id ? { ...te, ...patch } : te);
-    this._save(data);
-    return data.timeEntries.find(te => te.id === id);
-  }
-
-  deleteTimeEntry(id) {
-    const data = this._load();
-    data.timeEntries = (data.timeEntries || []).filter(te => te.id !== id);
-    this._save(data);
-  }
-
-  getTimeForCase(caseId) {
-    const data = this._load();
-    return (data.timeEntries || [])
-      .filter(te => te.caseId === caseId)
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
-  }
-
-  // --- INVOICES ---
-  createInvoice({ orgId, invoiceNumber, issueDate, dueDate, taxPercent = 0, notes = '', currency = 'PKR' }, timeEntryIds = []) {
-    const data = this._load();
-    if (!Array.isArray(data.invoices)) data.invoices = [];
-    if (!Array.isArray(data.timeEntries)) data.timeEntries = [];
-
-    const entries = data.timeEntries.filter(te => timeEntryIds.includes(te.id) && !te.invoiceId);
-    const lineItems = entries.map(te => ({
-      timeEntryId: te.id,
-      description: te.description || '',
-      date: te.date,
-      hours: Number(te.hours) || 0,
-      rate: Number(te.rate) || 0,
-      amount: (Number(te.hours) || 0) * (Number(te.rate) || 0)
-    }));
-    const subtotal = lineItems.reduce((sum, li) => sum + li.amount, 0);
-    const tax = subtotal * (Number(taxPercent) || 0) / 100;
-    const total = subtotal + tax;
-
-    const newInvoice = {
-      id: `invoice-${Date.now()}`,
-      orgId,
-      invoiceNumber: invoiceNumber || `INV-${Date.now()}`,
-      issueDate: issueDate || new Date().toISOString().split('T')[0],
-      dueDate: dueDate || '',
-      currency,
-      taxPercent: Number(taxPercent) || 0,
-      lineItems,
-      subtotal,
-      tax,
-      total,
-      status: 'Draft',
-      notes
-    };
-    data.invoices.push(newInvoice);
-
-    // Link time entries to invoice
-    data.timeEntries = data.timeEntries.map(te =>
-      timeEntryIds.includes(te.id) && !te.invoiceId
-        ? { ...te, invoiceId: newInvoice.id }
-        : te
-    );
-
-    this._save(data);
-    return newInvoice;
-  }
-
-  updateInvoiceStatus(id, status) {
-    const data = this._load();
-    data.invoices = (data.invoices || []).map(inv => inv.id === id ? { ...inv, status } : inv);
-    this._save(data);
-    return data.invoices.find(inv => inv.id === id);
-  }
-
-  deleteInvoice(id) {
-    const data = this._load();
-    data.invoices = (data.invoices || []).filter(inv => inv.id !== id);
-    // Unlink time entries
-    data.timeEntries = (data.timeEntries || []).map(te =>
-      te.invoiceId === id ? { ...te, invoiceId: null } : te
-    );
-    this._save(data);
-  }
-
-  getInvoicesForOrg(orgId) {
-    const data = this._load();
-    return (data.invoices || [])
-      .filter(inv => inv.orgId === orgId)
-      .sort((a, b) => new Date(b.issueDate) - new Date(a.issueDate));
-  }
-}
-
-export const db = new AttorneyDb();
-
-// Simple IndexedDB database configuration for storing binary vault files
-const DB_NAME = 'LamprellMCFilesDB';
-const STORE_NAME = 'files';
-
-function openFileDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
-    request.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
+    if (BLOCKING_STATUSES.includes(status)) {
+      const { available, conflicts } = this.checkAvailability(b.vehicleId, b.pickupDate, b.returnDate);
+      if (!available) {
+        const c = conflicts[0];
+        throw new Error(
+          `Vehicle is already booked from ${c.pickupDate} to ${c.returnDate}. Choose different dates or another vehicle.`
+        );
       }
-    };
-    request.onsuccess = (e) => resolve(e.target.result);
-    request.onerror = (e) => reject(e.target.error);
-  });
-}
-
-async function saveFileContent(docId, file) {
-  try {
-    const db = await openFileDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.put(file, docId);
-      request.onsuccess = () => resolve();
-      request.onerror = (e) => reject(e.target.error);
-    });
-  } catch (err) {
-    console.error('IndexedDB save error:', err);
-  }
-}
-
-async function getFileContent(docId) {
-  try {
-    const db = await openFileDB();
-    const blob = await new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.get(docId);
-      request.onsuccess = (e) => resolve(e.target.result);
-      request.onerror = (e) => reject(e.target.error);
-    });
-    if (blob) return blob;
-    
-    // Seed documents fallback: decode a valid blank 1-page PDF
-    const b64 = 'JVBERi0xLjUKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQovUmVzb3VyY2VzIDw8Pj4KL0NvbnRlbnRzIDQgMCBSCj4+CmVuZG9iago0IDAgb2JqCjw8Ci9MZW5ndGggMAo+PgpzdHJlYW0KZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1NiAwMDAwMCBuIAowMDAwMDAwMTExIDAwMDAwIG4gCjAwMDAwMDAyMTIgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA1Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgoyNjMKJSVFT0Y=';
-    const binaryStr = atob(b64);
-    const len = binaryStr.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
     }
-    return new Blob([bytes], { type: 'application/pdf' });
-  } catch (err) {
-    console.error('IndexedDB get error:', err);
-    return new Blob(['Simulated document contents.'], { type: 'text/plain' });
+
+    const newBooking = {
+      id: `bk-${Date.now()}`,
+      vehicleId: b.vehicleId,
+      customerId: b.customerId,
+      pickupDate: b.pickupDate,
+      returnDate: b.returnDate,
+      pickupLocation: b.pickupLocation || '',
+      withChauffeur: !!b.withChauffeur,
+      deposit: Number(b.deposit) || (vehicle ? vehicle.deposit : 0),
+      rentalAmount: Number(b.rentalAmount) || 0,
+      status,
+    };
+    data.bookings.push(newBooking);
+
+    if (BLOCKING_STATUSES.includes(status)) {
+      data.vehicles = data.vehicles.map(v => v.id === b.vehicleId ? { ...v, status: 'Rented' } : v);
+    }
+
+    this._save(data);
+    return newBooking;
+  }
+
+  updateBookingStatus(id, status) {
+    const data = this._load();
+    const booking = data.bookings.find(b => b.id === id);
+    if (!booking) return null;
+
+    data.bookings = data.bookings.map(b => b.id === id ? { ...b, status } : b);
+
+    if (!BLOCKING_STATUSES.includes(status)) {
+      const stillActive = data.bookings.some(
+        b => b.vehicleId === booking.vehicleId && b.id !== id && BLOCKING_STATUSES.includes(b.status)
+      );
+      if (!stillActive) {
+        // Don't override a manually-set Maintenance status.
+        data.vehicles = data.vehicles.map(v =>
+          v.id === booking.vehicleId && v.status === 'Rented' ? { ...v, status: 'Available' } : v
+        );
+      }
+    } else {
+      data.vehicles = data.vehicles.map(v => v.id === booking.vehicleId ? { ...v, status: 'Rented' } : v);
+    }
+
+    this._save(data);
+    return data.bookings.find(b => b.id === id);
+  }
+
+  deleteBooking(id) {
+    const data = this._load();
+    const booking = data.bookings.find(b => b.id === id);
+    data.bookings = data.bookings.filter(b => b.id !== id);
+
+    if (booking) {
+      const stillActive = data.bookings.some(
+        b => b.vehicleId === booking.vehicleId && BLOCKING_STATUSES.includes(b.status)
+      );
+      if (!stillActive) {
+        data.vehicles = data.vehicles.map(v =>
+          v.id === booking.vehicleId && v.status === 'Rented' ? { ...v, status: 'Available' } : v
+        );
+      }
+    }
+
+    this._save(data);
   }
 }
 
-async function deleteFileContent(docId) {
-  try {
-    const db = await openFileDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.delete(docId);
-      request.onsuccess = () => resolve();
-      request.onerror = (e) => reject(e.target.error);
-    });
-  } catch (err) {
-    console.error('IndexedDB delete error:', err);
-  }
-}
+export const db = new CarRentalDb();
+export { BOOKING_STATUSES, BLOCKING_STATUSES, CHAUFFEUR_DAILY_RATE };

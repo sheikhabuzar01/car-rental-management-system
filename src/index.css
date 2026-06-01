@@ -473,9 +473,15 @@ button, input, select, textarea {
 .badge-medium { background-color: var(--warning-light); color: var(--warning); }
 .badge-low { background-color: var(--primary-light); color: var(--primary); }
 
-.badge-active { background-color: var(--success-light); color: var(--success); }
+.badge-active { background-color: var(--primary-light); color: var(--primary); }
 .badge-pending { background-color: var(--warning-light); color: var(--warning); }
 .badge-closed { background-color: var(--text-muted); color: var(--text-secondary); }
+
+/* Car rental statuses */
+.badge-available { background-color: var(--success-light); color: var(--success); }
+.badge-rented { background-color: var(--warning-light); color: var(--warning); }
+.badge-completed { background-color: var(--success-light); color: var(--success); }
+.badge-cancelled { background-color: var(--danger-light); color: var(--danger); }
 
 /* Buttons styling */
 .btn {

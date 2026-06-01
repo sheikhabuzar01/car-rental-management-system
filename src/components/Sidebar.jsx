@@ -1,47 +1,33 @@
 import React from 'react';
 import {
   LayoutDashboard,
-  Building2,
-  Scale,
-  Calendar,
-  FileText,
-  CheckSquare,
-  PhoneCall,
-  DollarSign,
+  Car,
+  Users,
+  CalendarCheck,
   LogOut,
   X
 } from 'lucide-react';
-import { translations } from '../db/translations';
 
-export default function Sidebar({ lang, activeTab, setActiveTab, onLogout, isSidebarOpen, setIsSidebarOpen }) {
-  const t = translations[lang];
-
+export default function Sidebar({ activeTab, setActiveTab, onLogout, isSidebarOpen, setIsSidebarOpen }) {
   const menuItems = [
-    { id: 'dashboard', label: t.dashboard, icon: LayoutDashboard },
-    { id: 'clients', label: t.clients, icon: Building2 },
-    { id: 'cases', label: t.cases, icon: Scale },
-    { id: 'hearings', label: t.hearings, icon: Calendar },
-    { id: 'documents', label: t.documents, icon: FileText },
-    { id: 'tasks', label: t.tasks, icon: CheckSquare },
-    { id: 'contacts', label: t.contacts, icon: PhoneCall },
-    { id: 'billing', label: t.timeBilling, icon: DollarSign },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'vehicles', label: 'Vehicles', icon: Car },
+    { id: 'customers', label: 'Customers', icon: Users },
+    { id: 'bookings', label: 'Bookings', icon: CalendarCheck },
   ];
 
   return (
     <aside className={`sidebar ${isSidebarOpen ? 'sidebar-open' : ''}`}>
       <div className="sidebar-brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <Scale className="sidebar-logo text-primary" size={24} />
-          <span className="sidebar-title">{t.brandName}</span>
+          <Car className="sidebar-logo text-primary" size={24} />
+          <span className="sidebar-title">DXB Luxury</span>
         </div>
-        <button 
-          className="mobile-close-btn" 
-          onClick={() => setIsSidebarOpen(false)}
-        >
+        <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>
           <X size={20} />
         </button>
       </div>
-      
+
       <nav className="sidebar-nav">
         {menuItems.map((item) => {
           const Icon = item.icon;
@@ -65,20 +51,20 @@ export default function Sidebar({ lang, activeTab, setActiveTab, onLogout, isSid
         <div className="user-profile" style={{ marginBottom: '0.5rem' }}>
           <div className="avatar">A</div>
           <div className="user-info">
-            <span className="user-name">{lang === 'ur' ? 'وکیل صاحب' : 'Attorney Counsel'}</span>
-            <span className="user-role">{lang === 'ur' ? 'منیجنگ پارٹنر' : 'Managing Partner'}</span>
+            <span className="user-name">Fleet Admin</span>
+            <span className="user-role">Dubai Branch</span>
           </div>
         </div>
-        <button 
+        <button
           onClick={() => {
             onLogout();
             setIsSidebarOpen(false);
           }}
-          className="sidebar-item" 
-          style={{ 
-            width: '100%', 
-            border: 'none', 
-            background: 'rgba(239, 68, 68, 0.05)', 
+          className="sidebar-item"
+          style={{
+            width: '100%',
+            border: 'none',
+            background: 'rgba(239, 68, 68, 0.05)',
             color: '#f87171',
             display: 'flex',
             alignItems: 'center',
@@ -88,7 +74,7 @@ export default function Sidebar({ lang, activeTab, setActiveTab, onLogout, isSid
           }}
         >
           <LogOut size={16} />
-          <span>{t.signOut}</span>
+          <span>Sign Out</span>
         </button>
       </div>
     </aside>
