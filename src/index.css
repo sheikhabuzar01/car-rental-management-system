@@ -19,14 +19,15 @@
   
   --border-color: #e2e8f0;
 
-  /* Brand palette — Lamprell Management Consultancies */
-  --primary-color: #3d2817;   /* deep espresso */
-  --accent-color: #9b6f45;    /* warm cognac/tan */
-  --brand-gradient: -webkit-linear-gradient(left, var(--primary-color), #9b6f45);
+  /* Brand palette — TMT Car Rental (The Money Team) — Black & White */
+  --primary-color: #111111;   /* near-black */
+  --accent-color: #404040;    /* graphite */
+  --brand-gradient: -webkit-linear-gradient(left, #000000, #555555);
 
-  --primary: #3d2817;
-  --primary-hover: #2c1810;
-  --primary-light: #f5ead9;
+  --primary: #111111;
+  --primary-hover: #000000;
+  --primary-light: #f1f1f1;
+  --primary-contrast: #ffffff; /* text/icon color on a primary fill */
   
   --success: #10b981;
   --success-light: #d1fae5;
@@ -64,14 +65,15 @@
   
   --border-color: #27272a;
 
-  /* Brand palette — lifted for dark surfaces */
-  --primary-color: #bc8b5c;
-  --accent-color: #9b6f45;
-  --brand-gradient: -webkit-linear-gradient(left, var(--primary-color), #9b6f45);
+  /* Brand palette — TMT Car Rental — white accent on dark surfaces */
+  --primary-color: #ffffff;
+  --accent-color: #d4d4d4;
+  --brand-gradient: -webkit-linear-gradient(left, #ffffff, #a3a3a3);
 
-  --primary: #bc8b5c;
-  --primary-hover: #9b6f45;
-  --primary-light: rgba(188, 139, 92, 0.18);
+  --primary: #fafafa;
+  --primary-hover: #d4d4d4;
+  --primary-light: rgba(255, 255, 255, 0.14);
+  --primary-contrast: #09090b; /* dark text/icon on a white primary fill */
   
   --success: #10b981;
   --success-light: rgba(16, 185, 129, 0.15);
@@ -420,7 +422,7 @@ button, input, select, textarea {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 .custom-table th {
@@ -500,7 +502,7 @@ button, input, select, textarea {
 
 .btn-primary {
   background-color: var(--primary);
-  color: white;
+  color: var(--primary-contrast);
 }
 
 .btn-primary:hover {
@@ -955,7 +957,7 @@ textarea.form-control {
 
 /* Mobile Toggle Button */
 .mobile-toggle {
-  display: none;
+  display: inline-flex;
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -965,6 +967,18 @@ textarea.form-control {
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
+}
+
+/* Desktop: hamburger collapses the static sidebar */
+@media (min-width: 769px) {
+  .app-container.sidebar-collapsed .sidebar {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-right: none;
+    overflow: hidden;
+    opacity: 0;
+  }
 }
 
 .mobile-toggle:hover {

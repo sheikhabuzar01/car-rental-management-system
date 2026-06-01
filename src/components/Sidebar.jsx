@@ -21,7 +21,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, isSidebarOp
       <div className="sidebar-brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <Car className="sidebar-logo text-primary" size={24} />
-          <span className="sidebar-title">DXB Luxury</span>
+          <span className="sidebar-title">TMT Car Rental</span>
         </div>
         <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>
           <X size={20} />

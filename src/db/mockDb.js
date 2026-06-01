@@ -4,14 +4,14 @@ const STORAGE_KEY = 'dubai_luxury_rental_db_v1';
 
 const initialData = {
   vehicles: [
-    { id: 'veh-1', name: 'Lamborghini Huracán EVO', brand: 'Lamborghini', model: 'Huracán EVO Spyder', category: 'Supercar', year: 2023, color: 'Verde Mantis', registration: 'Dubai O 55512', dailyRent: 4500, deposit: 5000, status: 'Available', image: '' },
-    { id: 'veh-2', name: 'Ferrari 488 Spider', brand: 'Ferrari', model: '488 Spider', category: 'Convertible', year: 2022, color: 'Rosso Corsa', registration: 'Dubai K 11220', dailyRent: 5000, deposit: 6000, status: 'Available', image: '' },
-    { id: 'veh-3', name: 'Rolls-Royce Cullinan', brand: 'Rolls-Royce', model: 'Cullinan', category: 'Luxury SUV', year: 2023, color: 'Arctic White', registration: 'Dubai A 9001', dailyRent: 6500, deposit: 10000, status: 'Rented', image: '' },
-    { id: 'veh-4', name: 'Mercedes-Benz G63 AMG', brand: 'Mercedes-Benz', model: 'G63 AMG', category: 'Luxury SUV', year: 2023, color: 'Obsidian Black', registration: 'Dubai L 33440', dailyRent: 3000, deposit: 5000, status: 'Available', image: '' },
-    { id: 'veh-5', name: 'Bentley Continental GT', brand: 'Bentley', model: 'Continental GT', category: 'Luxury Sedan', year: 2023, color: 'British Racing Green', registration: 'Dubai M 7788', dailyRent: 3500, deposit: 5000, status: 'Available', image: '' },
-    { id: 'veh-6', name: 'Porsche 911 Carrera S', brand: 'Porsche', model: '911 Carrera S', category: 'Sports', year: 2023, color: 'GT Silver', registration: 'Dubai P 2024', dailyRent: 2500, deposit: 4000, status: 'Available', image: '' },
-    { id: 'veh-7', name: 'McLaren 720S', brand: 'McLaren', model: '720S', category: 'Supercar', year: 2022, color: 'Papaya Orange', registration: 'Dubai S 7200', dailyRent: 5500, deposit: 7000, status: 'Maintenance', image: '' },
-    { id: 'veh-8', name: 'Range Rover Vogue', brand: 'Land Rover', model: 'Range Rover Vogue', category: 'Luxury SUV', year: 2022, color: 'Santorini Black', registration: 'Dubai B 4510', dailyRent: 1500, deposit: 3000, status: 'Available', image: '' },
+    { id: 'veh-1', name: 'Lamborghini Huracán EVO', brand: 'Lamborghini', model: 'Huracán EVO Spyder', category: 'Supercar', year: 2023, color: 'Verde Mantis', registration: 'Dubai O 55512', dailyRent: 4500, deposit: 5000, status: 'Available', image: '/2.png' },
+    { id: 'veh-2', name: 'Ferrari 488 Spider', brand: 'Ferrari', model: '488 Spider', category: 'Convertible', year: 2022, color: 'Rosso Corsa', registration: 'Dubai K 11220', dailyRent: 5000, deposit: 6000, status: 'Available', image: '/3.png' },
+    { id: 'veh-3', name: 'Rolls-Royce Cullinan', brand: 'Rolls-Royce', model: 'Cullinan', category: 'Luxury SUV', year: 2023, color: 'Arctic White', registration: 'Dubai A 9001', dailyRent: 6500, deposit: 10000, status: 'Rented', image: '/4.png' },
+    { id: 'veh-4', name: 'Mercedes-Benz G63 AMG', brand: 'Mercedes-Benz', model: 'G63 AMG', category: 'Luxury SUV', year: 2023, color: 'Obsidian Black', registration: 'Dubai L 33440', dailyRent: 3000, deposit: 5000, status: 'Available', image: '/5.png' },
+    { id: 'veh-5', name: 'Bentley Continental GT', brand: 'Bentley', model: 'Continental GT', category: 'Luxury Sedan', year: 2023, color: 'British Racing Green', registration: 'Dubai M 7788', dailyRent: 3500, deposit: 5000, status: 'Available', image: '/6.png' },
+    { id: 'veh-6', name: 'Porsche 911 Carrera S', brand: 'Porsche', model: '911 Carrera S', category: 'Sports', year: 2023, color: 'GT Silver', registration: 'Dubai P 2024', dailyRent: 2500, deposit: 4000, status: 'Available', image: '/7.png' },
+    { id: 'veh-7', name: 'McLaren 720S', brand: 'McLaren', model: '720S', category: 'Supercar', year: 2022, color: 'Papaya Orange', registration: 'Dubai S 7200', dailyRent: 5500, deposit: 7000, status: 'Maintenance', image: '/8.png' },
+    { id: 'veh-8', name: 'Range Rover Vogue', brand: 'Land Rover', model: 'Range Rover Vogue', category: 'Luxury SUV', year: 2022, color: 'Santorini Black', registration: 'Dubai B 4510', dailyRent: 1500, deposit: 3000, status: 'Available', image: '/9.png' },
   ],
   customers: [
     { id: 'cus-1', fullName: 'Khalid Al Maktoum', phone: '+971 50 123 4567', email: 'khalid@example.ae', emiratesId: '784-1988-1234567-1', license: 'DXB-DL-99821', nationality: 'United Arab Emirates' },
@@ -76,6 +76,22 @@ class CarRentalDb {
     if (!Array.isArray(data.vehicles)) data.vehicles = [];
     if (!Array.isArray(data.customers)) data.customers = [];
     if (!Array.isArray(data.bookings)) data.bookings = [];
+
+    // Backfill seed vehicle images for data persisted before images existed.
+    // Only fills empty image fields, so user edits/additions are untouched.
+    const seedImages = Object.fromEntries(initialData.vehicles.map(v => [v.id, v.image]));
+    let imagesChanged = false;
+    data.vehicles = data.vehicles.map(v => {
+      if ((!v.image || v.image === '') && seedImages[v.id]) {
+        imagesChanged = true;
+        return { ...v, image: seedImages[v.id] };
+      }
+      return v;
+    });
+    if (imagesChanged) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
     return data;
   }
 

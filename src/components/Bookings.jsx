@@ -1,7 +1,21 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { CalendarCheck, Plus, Trash2, X, AlertTriangle, CheckCircle2, Search, User } from 'lucide-react';
+import { CalendarCheck, Plus, Trash2, X, AlertTriangle, CheckCircle2, Search, User, Download } from 'lucide-react';
 import { db, CHAUFFEUR_DAILY_RATE } from '../db/mockDb';
 import { formatAED, DUBAI_LOCATIONS } from '../utils/constants';
+import { toCSV, downloadCSV, datedFilename } from '../utils/csv';
+
+const BOOKING_CSV_COLUMNS = [
+  { key: 'customer', label: 'Customer' },
+  { key: 'vehicle', label: 'Vehicle' },
+  { key: 'registration', label: 'Registration' },
+  { key: 'pickupDate', label: 'Pickup Date' },
+  { key: 'returnDate', label: 'Return Date' },
+  { key: 'pickupLocation', label: 'Location' },
+  { key: 'chauffeur', label: 'Chauffeur' },
+  { key: 'deposit', label: 'Deposit (AED)' },
+  { key: 'rentalAmount', label: 'Amount (AED)' },
+  { key: 'status', label: 'Status' },
+];
 
 const today = () => new Date().toISOString().split('T')[0];
 
@@ -77,6 +91,24 @@ export default function Bookings({ dbData, refreshDb }) {
     }
   };
 
+  // Export the currently filtered bookings to CSV with readable names.
+  const handleExport = () => {
+    if (filtered.length === 0) return;
+    const rows = filtered.map(b => ({
+      customer: customerById(b.customerId)?.fullName || 'Unknown',
+      vehicle: vehicleById(b.vehicleId)?.name || 'Unknown',
+      registration: vehicleById(b.vehicleId)?.registration || '',
+      pickupDate: b.pickupDate,
+      returnDate: b.returnDate,
+      pickupLocation: b.pickupLocation || '',
+      chauffeur: b.withChauffeur ? 'Yes' : 'Self-drive',
+      deposit: b.deposit,
+      rentalAmount: b.rentalAmount,
+      status: b.status,
+    }));
+    downloadCSV(datedFilename('bookings'), toCSV(rows, BOOKING_CSV_COLUMNS));
+  };
+
   const handleStatusChange = (id, status) => { db.updateBookingStatus(id, status); refreshDb(); };
   const handleDelete = (b) => {
     if (window.confirm('Delete this booking? This cannot be undone.')) {
@@ -114,9 +146,14 @@ export default function Bookings({ dbData, refreshDb }) {
             <option value="Cancelled">Cancelled</option>
           </select>
         </div>
-        <button className="btn btn-primary" onClick={openCreate}>
-          <Plus size={16} /> Create Booking
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="btn btn-secondary" onClick={handleExport} disabled={filtered.length === 0} title="Export current list to CSV">
+            <Download size={16} /> Export CSV
+          </button>
+          <button className="btn btn-primary" onClick={openCreate}>
+            <Plus size={16} /> Create Booking
+          </button>
+        </div>
       </div>
 
       <div className="dashboard-panel">

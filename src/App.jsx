@@ -18,7 +18,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [dbData, setDbData] = useState(db.getData());
   const [theme, setTheme] = useState(() => localStorage.getItem('car_rental_theme') || 'dark');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // mobile drawer
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
+    () => localStorage.getItem('car_rental_sidebar_collapsed') === '1'
+  );
 
   // Sync with DB custom events
   useEffect(() => {
@@ -33,8 +36,22 @@ export default function App() {
     localStorage.setItem('car_rental_theme', theme);
   }, [theme]);
 
+  // Persist desktop sidebar collapse
+  useEffect(() => {
+    localStorage.setItem('car_rental_sidebar_collapsed', isSidebarCollapsed ? '1' : '0');
+  }, [isSidebarCollapsed]);
+
   const toggleTheme = () => setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   const refreshDb = () => setDbData(db.getData());
+
+  // Hamburger: on mobile toggles the off-canvas drawer; on desktop collapses the sidebar.
+  const handleToggleSidebar = () => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      setIsSidebarOpen(prev => !prev);
+    } else {
+      setIsSidebarCollapsed(prev => !prev);
+    }
+  };
 
   const renderView = () => {
     switch (activeTab) {
@@ -52,7 +69,7 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {isSidebarOpen && (
         <div
           className="sidebar-overlay"
@@ -75,13 +92,13 @@ export default function App() {
       <main className="main-content">
         <header className="top-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
-            <button className="mobile-toggle" onClick={() => setIsSidebarOpen(true)} title="Open Navigation">
+            <button className="mobile-toggle" onClick={handleToggleSidebar} title="Toggle Navigation">
               <Menu size={20} />
             </button>
             <div style={{ minWidth: 0, flex: 1 }}>
               <h1 className="page-title">{TAB_TITLES[activeTab]}</h1>
               <p className="header-subtitle">
-                DXB Luxury Car Rental — Dubai • <span style={{ color: 'var(--success)' }}>Online</span>
+                The Money Team Car Rental — Dubai • <span style={{ color: 'var(--success)' }}>Online</span>
               </p>
             </div>
           </div>

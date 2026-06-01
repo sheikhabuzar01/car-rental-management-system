@@ -43,11 +43,12 @@ export const NATIONALITIES = [
   'Other',
 ];
 
-// Premium gradient per category — used for vehicle card headers when no image
+// Monochrome gradient per category — TMT black & white. Used for vehicle
+// card headers when no image is set.
 export const CATEGORY_GRADIENT = {
-  Supercar: 'linear-gradient(135deg, #b8860b 0%, #1a1a1a 100%)',
-  Sports: 'linear-gradient(135deg, #8b0000 0%, #1a1a1a 100%)',
-  'Luxury SUV': 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)',
-  'Luxury Sedan': 'linear-gradient(135deg, #34495e 0%, #0f0f0f 100%)',
-  Convertible: 'linear-gradient(135deg, #6a3093 0%, #1a1a1a 100%)',
+  Supercar: 'linear-gradient(135deg, #3a3a3a 0%, #000000 100%)',
+  Sports: 'linear-gradient(135deg, #4a4a4a 0%, #111111 100%)',
+  'Luxury SUV': 'linear-gradient(135deg, #2b2b2b 0%, #000000 100%)',
+  'Luxury Sedan': 'linear-gradient(135deg, #555555 0%, #1a1a1a 100%)',
+  Convertible: 'linear-gradient(135deg, #6b6b6b 0%, #222222 100%)',
 };
